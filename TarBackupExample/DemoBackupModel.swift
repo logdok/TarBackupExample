@@ -16,12 +16,15 @@ struct DemoFile: Identifiable {
 final class DemoBackupModel {
     private(set) var sourceFiles: [DemoFile] = []
     private(set) var archivedEntries: [TarEntryInfo] = []
+    private(set) var archivedVersionCount = 0
+    private(set) var restoredFiles: [DemoFile] = []
     private(set) var archiveSize: UInt64 = 0
     private(set) var statusMessage = "Create the demo files to get started."
     private(set) var isWorking = false
 
     let sourceDirectoryURL: URL
     let archiveURL: URL
+    let restoreDirectoryURL: URL
 
     @ObservationIgnored private let fileManager: FileManager
     @ObservationIgnored private let backupManager: TarBackupManager
@@ -40,6 +43,7 @@ final class DemoBackupModel {
 
         sourceDirectoryURL = demoRootURL.appendingPathComponent("DemoFiles", isDirectory: true)
         archiveURL = demoRootURL.appendingPathComponent("demo-backup.tar")
+        restoreDirectoryURL = demoRootURL.appendingPathComponent("Restored", isDirectory: true)
         backupManager = TarBackupManager(
             archiveURL: archiveURL,
             sourceDirectoryURL: sourceDirectoryURL
@@ -47,24 +51,26 @@ final class DemoBackupModel {
     }
 
     func loadState() {
-        perform(successMessage: nil) {}
+        perform { nil }
     }
 
     func createDemoFiles() {
-        perform(successMessage: "Demo files are ready.") {
+        perform {
             try createDemoFilesIfNeeded()
+            return "Demo files are ready."
         }
     }
 
     func runBackup() {
-        perform(successMessage: "Incremental backup completed.") {
+        perform {
             try createDemoFilesIfNeeded()
             try backupManager.performBackup()
+            return "Incremental backup completed."
         }
     }
 
     func modifyWelcomeNote() {
-        perform(successMessage: "welcome.txt changed. Run backup again to append its new version.") {
+        perform {
             try createDemoFilesIfNeeded()
 
             let noteURL = sourceDirectoryURL.appendingPathComponent("notes/welcome.txt")
@@ -74,6 +80,7 @@ final class DemoBackupModel {
 
             let update = "\nUpdated at \(Date().formatted(date: .abbreviated, time: .standard)).\n"
             try handle.write(contentsOf: Data(update.utf8))
+            return "welcome.txt changed. Run backup again to append its new version."
         }
     }
 
@@ -83,17 +90,78 @@ final class DemoBackupModel {
             return
         }
 
-        perform(successMessage: "Archive compacted to the latest file versions.") {
+        perform {
             try backupManager.compactArchive()
+            return "Archive compacted to the latest file versions."
         }
     }
 
-    private func perform(successMessage: String?, operation: () throws -> Void) {
+    func extractOneFile() {
+        perform {
+            try requireArchive()
+            let destinationURL = restoreDirectoryURL.appendingPathComponent("OneFile", isDirectory: true)
+            _ = try backupManager.extractFile(
+                named: "notes/welcome.txt",
+                to: destinationURL
+            )
+            return "Extracted notes/welcome.txt."
+        }
+    }
+
+    func extractMultipleFiles() {
+        perform {
+            try requireArchive()
+            let destinationURL = restoreDirectoryURL.appendingPathComponent("NamedFiles", isDirectory: true)
+            let urls = try backupManager.extractFiles(
+                named: [
+                    "settings/preferences.json",
+                    "media/pattern.ppm"
+                ],
+                to: destinationURL
+            )
+            return "Extracted \(urls.count) explicitly named files."
+        }
+    }
+
+    func extractTextFilesWithWildcard() {
+        perform {
+            try requireArchive()
+            let destinationURL = restoreDirectoryURL.appendingPathComponent("Wildcard", isDirectory: true)
+            let urls = try backupManager.extract(
+                matching: "**/*.txt",
+                to: destinationURL
+            )
+            return "Wildcard **/*.txt extracted \(urls.count) files."
+        }
+    }
+
+    func extractReportsSubdirectory() {
+        perform {
+            try requireArchive()
+            let destinationURL = restoreDirectoryURL.appendingPathComponent("Subdirectory", isDirectory: true)
+            let urls = try backupManager.extractSubdirectory(
+                "reports",
+                to: destinationURL
+            )
+            return "Extracted the reports subdirectory with \(urls.count) files."
+        }
+    }
+
+    func clearRestoredFiles() {
+        perform {
+            if fileManager.fileExists(atPath: restoreDirectoryURL.path) {
+                try fileManager.removeItem(at: restoreDirectoryURL)
+            }
+            return "Restored demo files removed."
+        }
+    }
+
+    private func perform(operation: () throws -> String?) {
         isWorking = true
         defer { isWorking = false }
 
         do {
-            try operation()
+            let successMessage = try operation()
             try refreshState()
             if let successMessage {
                 statusMessage = successMessage
@@ -124,6 +192,19 @@ final class DemoBackupModel {
         try writeIfMissing(
             Data(
                 """
+                TarBackup 1.1.0 restore checklist:
+                - inspect the archive
+                - extract exact files
+                - try a wildcard
+                - restore a complete subdirectory
+                """.utf8
+            ),
+            relativePath: "notes/restore-checklist.txt"
+        )
+
+        try writeIfMissing(
+            Data(
+                """
                 {
                   "theme": "indigo",
                   "automaticBackup": true,
@@ -144,6 +225,15 @@ final class DemoBackupModel {
                 """.utf8
             ),
             relativePath: "reports/weekly.csv"
+        )
+
+        try writeIfMissing(
+            Data(
+                """
+                This nested report demonstrates recursive wildcard and subdirectory extraction.
+                """.utf8
+            ),
+            relativePath: "reports/2026/summary.txt"
         )
 
         try writeIfMissing(makePatternImage(), relativePath: "media/pattern.ppm")
@@ -177,10 +267,12 @@ final class DemoBackupModel {
     }
 
     private func refreshState() throws {
-        sourceFiles = try scanSourceFiles()
-        archivedEntries = try backupManager.repairAndIndexArchive()
-            .values
-            .sorted { $0.filename < $1.filename }
+        sourceFiles = try scanFiles(in: sourceDirectoryURL)
+        archivedEntries = try backupManager.listContents()
+        archivedVersionCount = try backupManager
+            .listContents(includingSupersededVersions: true)
+            .count
+        restoredFiles = try scanFiles(in: restoreDirectoryURL)
 
         guard fileManager.fileExists(atPath: archiveURL.path) else {
             archiveSize = 0
@@ -191,17 +283,23 @@ final class DemoBackupModel {
         archiveSize = (attributes[.size] as? NSNumber)?.uint64Value ?? 0
     }
 
-    private func scanSourceFiles() throws -> [DemoFile] {
-        guard fileManager.fileExists(atPath: sourceDirectoryURL.path),
+    private func requireArchive() throws {
+        guard fileManager.fileExists(atPath: archiveURL.path) else {
+            throw DemoBackupError.archiveMissing
+        }
+    }
+
+    private func scanFiles(in rootURL: URL) throws -> [DemoFile] {
+        guard fileManager.fileExists(atPath: rootURL.path),
               let enumerator = fileManager.enumerator(
-                at: sourceDirectoryURL,
+                at: rootURL,
                 includingPropertiesForKeys: [.isRegularFileKey, .fileSizeKey],
                 options: [.skipsHiddenFiles]
               ) else {
             return []
         }
 
-        let normalizedRootPath = sourceDirectoryURL
+        let normalizedRootPath = rootURL
             .standardizedFileURL
             .resolvingSymlinksInPath()
             .path + "/"
@@ -226,5 +324,13 @@ final class DemoBackupModel {
         }
 
         return files.sorted { $0.relativePath < $1.relativePath }
+    }
+}
+
+private enum DemoBackupError: LocalizedError {
+    case archiveMissing
+
+    var errorDescription: String? {
+        "Run an incremental backup before trying extraction."
     }
 }

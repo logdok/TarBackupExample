@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/logdok/TarBackup.git",
       "state" : {
-        "revision" : "6974bbc55a15bc92c3e66b9afcf708e997567305",
-        "version" : "1.0.0"
+        "revision" : "8295e968e7f20ba47269c0eb96ff825f9f4e4b1c",
+        "version" : "1.1.0"
       }
     }
   ],

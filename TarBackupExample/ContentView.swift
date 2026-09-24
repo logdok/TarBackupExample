@@ -41,9 +41,45 @@ struct ContentView: View {
                 }
                 .disabled(model.isWorking)
 
+                Section("TarBackup 1.1.0 Restore") {
+                    Button {
+                        model.extractOneFile()
+                    } label: {
+                        Label("Extract One File", systemImage: "doc")
+                    }
+
+                    Button {
+                        model.extractMultipleFiles()
+                    } label: {
+                        Label("Extract Named Files", systemImage: "doc.on.doc")
+                    }
+
+                    Button {
+                        model.extractTextFilesWithWildcard()
+                    } label: {
+                        Label("Extract **/*.txt", systemImage: "asterisk")
+                    }
+
+                    Button {
+                        model.extractReportsSubdirectory()
+                    } label: {
+                        Label("Extract reports/", systemImage: "folder")
+                    }
+
+                    Button(role: .destructive) {
+                        model.clearRestoredFiles()
+                    } label: {
+                        Label("Clear Restored Files", systemImage: "trash")
+                    }
+                    .disabled(model.restoredFiles.isEmpty)
+                }
+                .disabled(model.isWorking)
+
                 Section("Summary") {
                     LabeledContent("Source files", value: "\(model.sourceFiles.count)")
-                    LabeledContent("Archived files", value: "\(model.archivedEntries.count)")
+                    LabeledContent("Current archive entries", value: "\(model.archivedEntries.count)")
+                    LabeledContent("Stored entry versions", value: "\(model.archivedVersionCount)")
+                    LabeledContent("Restored files", value: "\(model.restoredFiles.count)")
                     LabeledContent("Archive size", value: formattedSize(model.archiveSize))
                 }
 
@@ -61,7 +97,7 @@ struct ContentView: View {
                     }
                 }
 
-                Section("Archive Index") {
+                Section("Archive Contents") {
                     if model.archivedEntries.isEmpty {
                         ContentUnavailableView(
                             "Archive Is Empty",
@@ -81,9 +117,24 @@ struct ContentView: View {
                     }
                 }
 
+                Section("Restored Files") {
+                    if model.restoredFiles.isEmpty {
+                        ContentUnavailableView(
+                            "Nothing Restored Yet",
+                            systemImage: "arrow.down.doc",
+                            description: Text("Use a TarBackup 1.1.0 restore action above.")
+                        )
+                    } else {
+                        ForEach(model.restoredFiles) { file in
+                            fileRow(name: file.relativePath, size: file.size)
+                        }
+                    }
+                }
+
                 Section("Locations") {
                     pathRow(title: "Source", url: model.sourceDirectoryURL)
                     pathRow(title: "Archive", url: model.archiveURL)
+                    pathRow(title: "Restored", url: model.restoreDirectoryURL)
                 }
             }
             .navigationTitle("TarBackup Demo")

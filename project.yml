@@ -9,7 +9,7 @@ options:
 packages:
   TarBackup:
     url: https://github.com/logdok/TarBackup.git
-    from: 1.0.0
+    from: 1.1.0
 
 targets:
   TarBackupExample:
@@ -23,6 +23,8 @@ targets:
       path: TarBackupExample/Info.plist
       properties:
         CFBundleDisplayName: TarBackup Demo
+        CFBundleShortVersionString: "1.1.0"
+        CFBundleVersion: "2"
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
@@ -30,6 +32,7 @@ targets:
           - UIInterfaceOrientationLandscapeRight
     settings:
       base:
+        DEVELOPMENT_TEAM: P3F5YYV27J
         PRODUCT_BUNDLE_IDENTIFIER: com.logdok.TarBackupExample
         SWIFT_VERSION: "5.9"
         TARGETED_DEVICE_FAMILY: "1,2"

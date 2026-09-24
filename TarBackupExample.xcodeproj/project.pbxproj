@@ -14,7 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		09E1AA92ECBD162F88066B4F /* TarBackupExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TarBackupExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		09E1AA92ECBD162F88066B4F /* TarBackupExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TarBackupExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		46495D420FB07154F55166CC /* TarBackupExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarBackupExampleApp.swift; sourceTree = "<group>"; };
 		A8A5475AE117AFA190482E66 /* DemoBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoBackupModel.swift; sourceTree = "<group>"; };
 		A8C5130DEA58A99006D07840 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -90,6 +90,11 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					4E8424EB6DA131B04EBEBB79 = {
+						DevelopmentTeam = P3F5YYV27J;
+					};
+				};
 			};
 			buildConfigurationList = 3948B969835BEA61C6DABFD0 /* Build configuration list for PBXProject "TarBackupExample" */;
 			developmentRegion = en;
@@ -311,7 +316,7 @@
 			repositoryURL = "https://github.com/logdok/TarBackup.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
