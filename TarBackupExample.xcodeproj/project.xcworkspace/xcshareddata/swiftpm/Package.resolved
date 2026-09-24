@@ -1,0 +1,15 @@
+{
+  "originHash" : "6f07ce64c8523b06dc3a2cdac3136c2a25c5de269998bd72e58869a8569c6f42",
+  "pins" : [
+    {
+      "identity" : "tarbackup",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/logdok/TarBackup.git",
+      "state" : {
+        "revision" : "6974bbc55a15bc92c3e66b9afcf708e997567305",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
