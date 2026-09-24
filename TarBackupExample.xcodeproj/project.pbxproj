@@ -7,15 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		05F877AA738D761C1C2E8651 /* DemoComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C0C130158280494828E3B /* DemoComponents.swift */; };
 		32F8E55F592D35785ABABEEE /* TarBackup in Frameworks */ = {isa = PBXBuildFile; productRef = DBB0144CAA4556887D254808 /* TarBackup */; };
 		99F52C71C9EEB17721D081AD /* DemoBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A5475AE117AFA190482E66 /* DemoBackupModel.swift */; };
 		A0BB1E32E4DB699996677426 /* TarBackupExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46495D420FB07154F55166CC /* TarBackupExampleApp.swift */; };
 		AB28F31C2F614DA1F4644C7A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C5130DEA58A99006D07840 /* ContentView.swift */; };
+		C79D9FA961A8A85E5D142513 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD01892E27E45696B271846 /* DashboardView.swift */; };
+		CAAC0FCB14910974817F5664 /* ArchiveOperationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BA4F66A8D62B73A2E6ECDEF /* ArchiveOperationsView.swift */; };
+		D274E6D955657E986513D822 /* RestoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AA3948718C358A3F30F03A3 /* RestoreView.swift */; };
+		FECEC517EA38F7BE39337438 /* ArchiveBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DCDAE37E3C9D9FD69EFDF88 /* ArchiveBrowserView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		09E1AA92ECBD162F88066B4F /* TarBackupExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TarBackupExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0BA4F66A8D62B73A2E6ECDEF /* ArchiveOperationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveOperationsView.swift; sourceTree = "<group>"; };
+		3AD01892E27E45696B271846 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		46495D420FB07154F55166CC /* TarBackupExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TarBackupExampleApp.swift; sourceTree = "<group>"; };
+		5AA3948718C358A3F30F03A3 /* RestoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreView.swift; sourceTree = "<group>"; };
+		5DCDAE37E3C9D9FD69EFDF88 /* ArchiveBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveBrowserView.swift; sourceTree = "<group>"; };
+		842C0C130158280494828E3B /* DemoComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoComponents.swift; sourceTree = "<group>"; };
 		A8A5475AE117AFA190482E66 /* DemoBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoBackupModel.swift; sourceTree = "<group>"; };
 		A8C5130DEA58A99006D07840 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E01635FBF38DA9DABC55D007 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -44,9 +54,14 @@
 		D16EEA44CDD53F6FAA14AB97 /* TarBackupExample */ = {
 			isa = PBXGroup;
 			children = (
+				5DCDAE37E3C9D9FD69EFDF88 /* ArchiveBrowserView.swift */,
+				0BA4F66A8D62B73A2E6ECDEF /* ArchiveOperationsView.swift */,
 				A8C5130DEA58A99006D07840 /* ContentView.swift */,
+				3AD01892E27E45696B271846 /* DashboardView.swift */,
 				A8A5475AE117AFA190482E66 /* DemoBackupModel.swift */,
+				842C0C130158280494828E3B /* DemoComponents.swift */,
 				E01635FBF38DA9DABC55D007 /* Info.plist */,
+				5AA3948718C358A3F30F03A3 /* RestoreView.swift */,
 				46495D420FB07154F55166CC /* TarBackupExampleApp.swift */,
 			);
 			path = TarBackupExample;
@@ -123,8 +138,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FECEC517EA38F7BE39337438 /* ArchiveBrowserView.swift in Sources */,
+				CAAC0FCB14910974817F5664 /* ArchiveOperationsView.swift in Sources */,
 				AB28F31C2F614DA1F4644C7A /* ContentView.swift in Sources */,
+				C79D9FA961A8A85E5D142513 /* DashboardView.swift in Sources */,
 				99F52C71C9EEB17721D081AD /* DemoBackupModel.swift in Sources */,
+				05F877AA738D761C1C2E8651 /* DemoComponents.swift in Sources */,
+				D274E6D955657E986513D822 /* RestoreView.swift in Sources */,
 				A0BB1E32E4DB699996677426 /* TarBackupExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,7 +336,7 @@
 			repositoryURL = "https://github.com/logdok/TarBackup.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

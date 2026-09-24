@@ -9,7 +9,7 @@ options:
 packages:
   TarBackup:
     url: https://github.com/logdok/TarBackup.git
-    from: 1.1.0
+    from: 1.2.0
 
 targets:
   TarBackupExample:
@@ -22,9 +22,13 @@ targets:
     info:
       path: TarBackupExample/Info.plist
       properties:
-        CFBundleDisplayName: TarBackup Demo
+        CFBundleDisplayName: TarBackupExample
         CFBundleShortVersionString: "1.1.0"
         CFBundleVersion: "2"
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.tarbackup.compacting
+        UIBackgroundModes:
+          - processing
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
